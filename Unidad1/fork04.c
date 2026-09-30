@@ -12,7 +12,6 @@ int main() {
         printf("Mi PID es: %d\n", getpid());
         printf("El PID de mi padre: %d\n", getppid()); 
         sleep(3);  
-        exit(0);
     } 
     pid2 = fork();
     if(pid2==0){
@@ -20,15 +19,13 @@ int main() {
         printf("Mi PID es: %d\n", getpid());
         printf("El PID de mi padre: %d\n", getppid()); 
         sleep(1);
-        exit(0);
-    }
-    else { // Proceso padre 
+    }else{
         pid_hijo1 = wait(NULL);
         pid_hijo2 = wait(NULL);
-        printf("Soy el padre: \n");
-        printf("Mi PID es: %d\n", getpid());
-        printf("El PID de mi padre: %d\n", getppid()); 
-        printf("Todos mis hijos ya han terminado.");
+        printf("Soy el padre.");
+        printf("Mi PID es: %d\n", getpid())
+        printf("Mis dos Hijos han terminado.");
     }
+
     exit(0);
 }

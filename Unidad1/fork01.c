@@ -13,7 +13,7 @@ int main() {
         exit(-1);       
     }
 
-    if (pid == 0)    
+    if (pid == 0) { // Añadida la llave '{'
         printf("Soy el proceso hijo:\n");   
         printf("Mi PID es: %d\n", getpid());
         printf("El PID de mi padre: %d\n", getppid());   
