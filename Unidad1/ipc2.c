@@ -1,58 +1,40 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <string.h>
 
 int main() {
     int fd[2];
     pipe(fd);
     pid_t pid = fork();
-
     if (pid == 0) {
-        // HIJO: solo lee
+        // HIJO: lee y suma
         close(fd[1]);
-        printf("Soy el proceso hijo con PID: %d\n", getpid());
-
-        int contador = 0;
-        int numero;
-        char suma;
-
-        read(fd[0], &numero, sizeof(numero));
-        printf("Numero a sumar: %d\n", numero);
-        contador += numero;
-
-        read(fd[0], &numero, sizeof(numero));
-        printf("Numero a sumar: %d\n", numero);
-        contador += numero;
-
-        read(fd[0], &numero, sizeof(numero));
-        printf("Numero a sumar: %d\n", numero);
-        contador += numero;
-
-        read(fd[0], &suma, sizeof(suma));
-        if (suma == '+') {
-            printf("Recibido caracter %c\n", suma);
-            printf("La suma total es igual a: %d\n", contador);
+        char buffer[32];
+        int suma = 0;
+        while (1) {
+            read(fd[0], buffer, sizeof(buffer));
+            if (strcmp(buffer, "+") == 0) {
+                printf("Recibido carácter +\n");
+                break;
+            }
+            int num = atoi(buffer);
+            printf("Numero a sumar: %d\n", num);
+            suma += num;
         }
-
+        printf("La suma total es igual a: %d\n", suma);
         close(fd[0]);
     } else {
-        // PADRE: solo escribe
+        // PADRE: pide por teclado y escribe
         close(fd[0]);
-
-        int numero1, numero2, numero3;
-        numero1 = 40;
-        numero2 = 54;
-        numero3 = 10;
-        char mas = '+';
-
-        write(fd[1], &numero1, sizeof(numero1));
-        write(fd[1], &numero2, sizeof(numero2));
-        write(fd[1], &numero3, sizeof(numero3));
-        write(fd[1], &mas, sizeof(mas));
-
+        char entrada[32];
+        do {
+            scanf("%s", entrada);
+            write(fd[1], entrada, sizeof(entrada));
+        } while (strcmp(entrada, "+") != 0);
         close(fd[1]);
         wait(NULL);
     }
-
     return 0;
 }
